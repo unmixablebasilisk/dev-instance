@@ -1,0 +1,34 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: Expand the root volume to recommended size of 10GiB.
+      lvol:
+        vg: System
+        lv: root
+        size: 10g
+        resizefs: true
+    - name: Expand the root volume to size of 5GiB.
+      lvol:
+        vg: System
+        lv: var
+        size: 5g
+        resizefs: true
+    - name: Expand the home volume to size of 20GiB.
+      lvol:
+        vg: System
+        lv: home
+        size: 20g
+        resizefs: true
+
+- hosts: all
+  become: true
+  tasks:
+    - name: Install system updates for centos systems
+      yum:
+        name: '*'
+        state: latest
+        update_cache: yes
+      when:
+        - ansible_os_family == "RedHat"
+        - ansible_distribution == "CentOS"
